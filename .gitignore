@@ -1,0 +1,28 @@
+# Compiled binaries
+*.exe
+*.o
+*.obj
+*.out
+*.a
+*.lib
+
+# Build directories
+build/
+out/
+cmake-build-*/
+
+# Runtime-generated data & logs
+data/
+reports/
+
+# IDE / editor files
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+*.vcxproj.user
+
+# Windows thumbnails
+Thumbs.db
+Desktop.ini
