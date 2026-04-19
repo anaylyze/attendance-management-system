@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AttendTrack — Smart Attendance Management</title>
+  <meta name="description" content="AttendTrack is a modern, playful attendance management system for schools and institutions. Track students, mark attendance, view analytics and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">📋</div>
+      <span class="logo-text">AttendTrack</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="students" id="nav-students">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Students</span>
+      </a>
+      <a href="#" class="nav-item" data-page="attendance" id="nav-attendance">
+        <span class="nav-icon">✅</span>
+        <span class="nav-label">Attendance</span>
+      </a>
+      <a href="#" class="nav-item" data-page="analytics" id="nav-analytics">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Analytics</span>
+      </a>
+      <a href="#" class="nav-item" data-page="reports" id="nav-reports">
+        <span class="nav-icon">📄</span>
+        <span class="nav-label">Reports</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="xp-card">
+        <div class="xp-label">Streak 🔥</div>
+        <div class="xp-value" id="streakCount">7 days</div>
+        <div class="xp-bar"><div class="xp-fill" style="width: 70%"></div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MOBILE TOP BAR -->
+  <header class="mobile-topbar">
+    <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+    <span class="mobile-title">AttendTrack</span>
+    <div class="mobile-avatar">T</div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ======= DASHBOARD PAGE ======= -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Good evening, Teacher! 👋</h1>
+          <p class="page-subtitle">Here's your classroom overview for today</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" id="quickMarkBtn">⚡ Quick Mark</button>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-grid">
+        <div class="stat-card stat-green">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <div class="stat-value" id="totalStudents">32</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-badge">+2 this week</div>
+        </div>
+        <div class="stat-card stat-blue">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <div class="stat-value" id="presentToday">27</div>
+            <div class="stat-label">Present Today</div>
+          </div>
+          <div class="stat-badge">84.4%</div>
+        </div>
+        <div class="stat-card stat-orange">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-info">
+            <div class="stat-value" id="lowAttendance">3</div>
+            <div class="stat-label">Low Attendance</div>
+          </div>
+          <div class="stat-badge">Below 75%</div>
+        </div>
+        <div class="stat-card stat-purple">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <div class="stat-value">April 2026</div>
+            <div class="stat-label">Current Month</div>
+          </div>
+          <div class="stat-badge">19 days</div>
+        </div>
+      </div>
+
+      <!-- Main Grid: Chart + Today's Status -->
+      <div class="dashboard-grid">
+        <!-- Weekly Chart -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <h2 class="card-title">Weekly Attendance</h2>
+            <div class="legend">
+              <span class="legend-dot present"></span> Present
+              <span class="legend-dot absent"></span> Absent
+              <span class="legend-dot late"></span> Late
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Today's Snapshot -->
+        <div class="card snapshot-card">
+          <div class="card-header">
+            <h2 class="card-title">Today's Snapshot</h2>
+            <span class="today-date" id="todayDate"></span>
+          </div>
+          <div class="donut-container">
+            <canvas id="donutChart" width="160" height="160"></canvas>
+            <div class="donut-center">
+              <div class="donut-pct" id="donutPct">84%</div>
+              <div class="donut-lbl">Present</div>
+            </div>
+          </div>
+          <div class="snapshot-stats">
+            <div class="snap-item"><span class="snap-dot present"></span><span>Present</span><strong id="snap-present">27</strong></div>
+            <div class="snap-item"><span class="snap-dot absent"></span><span>Absent</span><strong id="snap-absent">3</strong></div>
+            <div class="snap-item"><span class="snap-dot late"></span><span>Late</span><strong id="snap-late">2</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity + Low Attendance Alerts -->
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">⚠️ Low Attendance Alerts</h2>
+            <span class="badge badge-danger">3 students</span>
+          </div>
+          <div class="alert-list" id="alertList"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">🕐 Recent Activity</h2>
+          </div>
+          <div class="activity-list" id="activityList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= STUDENTS PAGE ======= -->
+    <div class="page" id="page-students">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Students 👥</h1>
+          <p class="page-subtitle">Manage your classroom roster</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" id="addStudentBtn">+ Add Student</button>
+        </div>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="filter-toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="studentSearch" placeholder="Search by name or section..." />
+        </div>
+        <select class="filter-select" id="sectionFilter">
+          <option value="">All Sections</option>
+          <option value="A">Section A</option>
+          <option value="B">Section B</option>
+          <option value="C">Section C</option>
+        </select>
+        <select class="filter-select" id="sortStudents">
+          <option value="name">Sort by Name</option>
+          <option value="id">Sort by ID</option>
+          <option value="attendance">Sort by Attendance</option>
+        </select>
+      </div>
+
+      <!-- Student Grid Cards -->
+      <div class="student-grid" id="studentGrid"></div>
+    </div>
+
+    <!-- ======= ATTENDANCE PAGE ======= -->
+    <div class="page" id="page-attendance">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Mark Attendance ✅</h1>
+          <p class="page-subtitle">Record daily attendance for your class</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline" id="undoBtn" title="Undo">↩ Undo</button>
+          <button class="btn btn-outline" id="redoBtn" title="Redo">↪ Redo</button>
+          <button class="btn btn-primary" id="saveAttendanceBtn">💾 Save All</button>
+        </div>
+      </div>
+
+      <!-- Date Picker -->
+      <div class="date-bar card">
+        <label class="date-label" for="attendanceDate">📅 Select Date</label>
+        <input type="date" class="date-picker" id="attendanceDate" />
+        <button class="btn btn-secondary" id="loadDateBtn">Load</button>
+        <div class="bulk-actions">
+          <button class="btn btn-sm btn-green" id="markAllPresent">✅ All Present</button>
+          <button class="btn btn-sm btn-red" id="markAllAbsent">❌ All Absent</button>
+        </div>
+      </div>
+
+      <!-- Attendance Table -->
+      <div class="card">
+        <div class="table-wrap">
+          <table class="attendance-table" id="attendanceTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Roll No.</th>
+                <th>Section</th>
+                <th>Status</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= ANALYTICS PAGE ======= -->
+    <div class="page" id="page-analytics">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Analytics 📊</h1>
+          <p class="page-subtitle">Insights into attendance patterns</p>
+        </div>
+      </div>
+
+      <!-- Analytics Cards -->
+      <div class="analytics-top-grid">
+        <div class="card analytics-card">
+          <div class="analytics-icon">📈</div>
+          <div class="analytics-title">Average Attendance</div>
+          <div class="analytics-value">82.4%</div>
+          <div class="analytics-sub">Across all sections</div>
+        </div>
+        <div class="card analytics-card">
+          <div class="analytics-icon">🏆</div>
+          <div class="analytics-title">Best Section</div>
+          <div class="analytics-value">Section A</div>
+          <div class="analytics-sub">91.2% attendance rate</div>
+        </div>
+        <div class="card analytics-card">
+          <div class="analytics-icon">📉</div>
+          <div class="analytics-title">Needs Attention</div>
+          <div class="analytics-value">3 students</div>
+          <div class="analytics-sub">Below 75% threshold</div>
+        </div>
+      </div>
+
+      <!-- Per-Student Analytics -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Student Attendance Ranking</h2>
+          <span class="badge">Worst First</span>
+        </div>
+        <div class="analytics-student-list" id="analyticsStudentList"></div>
+      </div>
+
+      <!-- Section Comparison -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Section Comparison</h2>
+        </div>
+        <div class="section-bars" id="sectionBars"></div>
+      </div>
+    </div>
+
+    <!-- ======= REPORTS PAGE ======= -->
+    <div class="page" id="page-reports">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Reports 📄</h1>
+          <p class="page-subtitle">Generate and export attendance reports</p>
+        </div>
+      </div>
+
+      <div class="reports-grid">
+        <div class="report-card card" id="rpt-analytics">
+          <div class="report-icon">📊</div>
+          <h3 class="report-title">Analytics Report</h3>
+          <p class="report-desc">Full per-student attendance percentages, sorted worst-first. Includes total days, present days, and status breakdown.</p>
+          <div class="report-meta">Last generated: Today</div>
+          <button class="btn btn-primary report-btn" data-report="analytics">Generate & Download</button>
+        </div>
+        <div class="report-card card" id="rpt-low">
+          <div class="report-icon">⚠️</div>
+          <h3 class="report-title">Low Attendance Report</h3>
+          <p class="report-desc">Students flagged below the 75% attendance threshold. Ready for parental notification.</p>
+          <div class="report-meta">3 students flagged</div>
+          <button class="btn btn-danger report-btn" data-report="low">Generate & Download</button>
+        </div>
+        <div class="report-card card" id="rpt-summary">
+          <div class="report-icon">📋</div>
+          <h3 class="report-title">Monthly Summary</h3>
+          <p class="report-desc">Complete month-wise attendance overview with section-wise breakdowns and trends.</p>
+          <div class="report-meta">April 2026</div>
+          <button class="btn btn-secondary report-btn" data-report="summary">Generate & Download</button>
+        </div>
+        <div class="report-card card" id="rpt-csv">
+          <div class="report-icon">📁</div>
+          <h3 class="report-title">Export CSV</h3>
+          <p class="report-desc">Export raw attendance data as CSV for use in Excel, Sheets, or other tools.</p>
+          <div class="report-meta">All records</div>
+          <button class="btn btn-outline report-btn" data-report="csv">Export CSV</button>
+        </div>
+      </div>
+
+      <!-- Report Preview -->
+      <div class="card" id="reportPreviewCard" style="display:none">
+        <div class="card-header">
+          <h2 class="card-title">Report Preview</h2>
+          <button class="btn btn-sm btn-outline" id="downloadReportBtn">⬇ Download</button>
+        </div>
+        <pre class="report-preview" id="reportPreview"></pre>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ADD STUDENT MODAL -->
+  <div class="modal-overlay" id="addStudentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Add New Student 🎓</h2>
+        <button class="modal-close" id="closeAddStudentModal">✕</button>
+      </div>
+      <form id="addStudentForm" class="modal-form">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="sName" placeholder="e.g. Priya Sharma" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select class="form-input" id="sSection" required>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Roll Number</label>
+            <input type="text" class="form-input" id="sRoll" placeholder="e.g. 23CS045" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Enrollment Year</label>
+          <input type="number" class="form-input" id="sYear" value="2024" min="2000" max="2030" required />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelAddStudent">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Student 🎉</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- QUICK MARK MODAL -->
+  <div class="modal-overlay" id="quickMarkModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">⚡ Quick Mark Attendance</h2>
+        <button class="modal-close" id="closeQuickModal">✕</button>
+      </div>
+      <div class="quick-mark-body">
+        <p>Mark attendance for all students for today?</p>
+        <div class="quick-options">
+          <button class="quick-btn quick-present" id="qmPresent">✅ All Present</button>
+          <button class="quick-btn quick-absent" id="qmAbsent">❌ All Absent</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
