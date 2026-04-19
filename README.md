@@ -1,10 +1,61 @@
 # Attendance Management System
 
-A **terminal-based, production-quality Attendance Management System** written in modern **C++17**. Designed with clean layered architecture, full OOP, STL data structures with justified choices, persistent CSV storage, undo/redo via Command Pattern, analytics, and a thread-safe logging system.
+A **terminal-based, production-quality Attendance Management System** written in modern **C++17**, now with a **Duolingo-inspired web frontend** deployed on Netlify.
+
+> **🚀 Live Demo:** [https://hilarious-salamander-d9dc11.netlify.app](https://hilarious-salamander-d9dc11.netlify.app)
 
 ---
 
-## Feature Set
+## Web Frontend
+
+A fully interactive single-page web application built with vanilla HTML, CSS, and JavaScript — no frameworks, no build step. Inspired by Duolingo's playful-yet-focused design language.
+
+### Pages & Features
+
+| Page | Features |
+|---|---|
+| **Dashboard** | Live stats cards, weekly stacked bar chart, donut chart, low-attendance alerts, activity feed, quick-mark modal |
+| **Students** | Searchable & filterable card grid, per-student attendance progress bars, add / remove students |
+| **Attendance** | Date picker, status toggles (Present / Absent / Late / Excused), bulk-mark all, **undo / redo**, per-student comments |
+| **Analytics** | Per-student ranking sorted worst-first, section comparison bars |
+| **Reports** | Generate & download analytics report, low-attendance report, monthly summary, and raw CSV export |
+
+### Design System
+
+| Token | Value |
+|---|---|
+| **Heading font** | [Nunito](https://fonts.google.com/specimen/Nunito) — weight 800/900 |
+| **Body font** | [DM Sans](https://fonts.google.com/specimen/DM+Sans) — weight 400/600 |
+| **Primary colour** | `#10b981` (Emerald 500) |
+| **Accent colours** | Blue `#3b82f6` · Orange `#f97316` · Purple `#a855f7` |
+| **Card radius** | 14 px / 20 px (large) |
+| **Animations** | Fade-in pages · hover lift · smooth bar fills · spring-scaled modals |
+| **Gamification** | Streak widget in sidebar (7-day flame counter, XP bar) |
+| **Responsive** | Mobile hamburger sidebar, 2-column → 1-column grid breakpoints |
+
+### Frontend File Structure
+
+```
+frontend/
+├── index.html   ← Single-page app shell (5 pages, 2 modals, toast system)
+├── style.css    ← Full design system: tokens, layout, components, responsive
+└── app.js       ← State management, canvas charts, attendance logic, undo/redo
+```
+
+### Deployment (Netlify)
+
+The `netlify.toml` at the repo root configures automatic deployment:
+
+```toml
+[build]
+  publish = "frontend"
+```
+
+Every push to `main` triggers a new deploy. No build command required — it's a pure static site.
+
+---
+
+## C++ Backend — Feature Set
 
 | Feature | Details |
 |---|---|
@@ -52,10 +103,15 @@ A **terminal-based, production-quality Attendance Management System** written in
 ## Project Structure
 
 ```
-attendance_system/
+attendance-management-system/
+├── netlify.toml            ← Netlify deploy config (publish = "frontend")
 ├── CMakeLists.txt
 ├── build.ps1               ← PowerShell build script (MinGW)
 ├── main.cpp
+├── frontend/               ← Web UI (deployed to Netlify)
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
 ├── include/
 │   ├── entity/             Date, Person, Student, Teacher, AttendanceRecord, Comment
 │   ├── command/            ICommand, MarkAttendanceCommand, EditAttendanceCommand
@@ -79,7 +135,7 @@ attendance_system/
 
 ---
 
-## Build & Run
+## Build & Run (C++ CLI)
 
 ### Prerequisites
 - **MinGW g++** with C++17 support (`g++ --version` ≥ 9)  
@@ -87,7 +143,7 @@ attendance_system/
 
 ### Option 1 — PowerShell script (MinGW, no CMake needed)
 ```powershell
-cd attendance_system
+cd attendance-management-system
 .\build.ps1
 .\ams.exe
 ```
